@@ -88,12 +88,9 @@ export default function Testimonials() {
         {/* Marquee Container */}
         <motion.div
           initial={{ x: 0 }}
-          animate={{ x: "-50%" }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: "linear",
-          }}
+          whileInView={{ x: "-50%" }}
+          viewport={{ once: false, amount: 0.1 }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
           className="flex gap-6 w-fit"
         >
           {/* Duplicate testimonials for seamless loop */}

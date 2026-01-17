@@ -4,17 +4,19 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Mail, Lock, Eye, EyeOff, LogIn } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, User, UserPlus } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
+    name: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
 
   const handleChange = (e) => {
@@ -23,21 +25,37 @@ export default function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      const result = await signIn("credentials", {
-        email: formData.email,
-        password: formData.password,
-        redirect: false,
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        }),
       });
 
-      if (result?.error) {
-        toast.error("Invalid email or password");
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success("Account created! Please login.");
+        router.push("/login");
       } else {
-        toast.success("Login successful!");
-        router.push("/");
-        router.refresh();
+        toast.error(data.error || "Registration failed");
       }
     } catch (error) {
       toast.error("Something went wrong");
@@ -46,7 +64,7 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleLogin = () => {
+  const handleGoogleSignup = () => {
     signIn("google", { callbackUrl: "/" });
   };
 
@@ -70,16 +88,16 @@ export default function LoginPage() {
           </div>
         </Link>
 
-        {/* Login Card */}
+        {/* Register Card */}
         <div className="bg-white rounded-2xl border border-gray-200 shadow-xl p-8">
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-gray-900">Welcome Back!</h1>
-            <p className="text-gray-500 mt-1">Sign in to your account</p>
+            <h1 className="text-2xl font-bold text-gray-900">Create Account</h1>
+            <p className="text-gray-500 mt-1">Join হাটবাড়ি today</p>
           </div>
 
-          {/* Google Login */}
+          {/* Google Signup */}
           <button
-            onClick={handleGoogleLogin}
+            onClick={handleGoogleSignup}
             className="w-full flex items-center justify-center gap-3 py-3 px-4 bg-white border border-gray-300 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-colors mb-6"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -112,8 +130,26 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Login Form */}
+          {/* Register Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Full Name
+              </label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="Your name"
+                  required
+                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-green-500 focus:bg-white transition-all"
+                />
+              </div>
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Email
@@ -145,6 +181,7 @@ export default function LoginPage() {
                   onChange={handleChange}
                   placeholder="••••••••"
                   required
+                  minLength={6}
                   className="w-full pl-10 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-green-500 focus:bg-white transition-all"
                 />
                 <button
@@ -161,20 +198,40 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="w-4 h-4 rounded border-gray-300 text-green-500 focus:ring-green-500"
-                />
-                <span className="text-sm text-gray-600">Remember me</span>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Confirm Password
               </label>
-              <Link
-                href="#"
-                className="text-sm text-green-600 hover:text-green-700"
-              >
-                Forgot password?
-              </Link>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  placeholder="••••••••"
+                  required
+                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-green-500 focus:bg-white transition-all"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-start gap-2">
+              <input
+                type="checkbox"
+                required
+                className="w-4 h-4 mt-1 rounded border-gray-300 text-green-500 focus:ring-green-500"
+              />
+              <span className="text-sm text-gray-600">
+                I agree to the{" "}
+                <Link href="#" className="text-green-600 hover:underline">
+                  Terms of Service
+                </Link>{" "}
+                and{" "}
+                <Link href="#" className="text-green-600 hover:underline">
+                  Privacy Policy
+                </Link>
+              </span>
             </div>
 
             <button
@@ -185,19 +242,19 @@ export default function LoginPage() {
               {isLoading ? (
                 <span className="animate-spin">⏳</span>
               ) : (
-                <LogIn className="w-5 h-5" />
+                <UserPlus className="w-5 h-5" />
               )}
-              {isLoading ? "Signing in..." : "Sign In"}
+              {isLoading ? "Creating account..." : "Create Account"}
             </button>
           </form>
 
           <p className="text-center text-gray-500 mt-6">
-            Don&apos;t have an account?{" "}
+            Already have an account?{" "}
             <Link
-              href="/register"
+              href="/login"
               className="text-green-600 hover:text-green-700 font-medium"
             >
-              Sign up
+              Sign in
             </Link>
           </p>
         </div>

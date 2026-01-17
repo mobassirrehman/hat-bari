@@ -1,22 +1,24 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import Link from 'next/link';
-import { ShoppingBag, Plus, Minus, Trash2, ArrowRight } from 'lucide-react';
-import { useCartStore } from '@/store/cartStore';
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import { ShoppingBag, Plus, Minus, Trash2, ArrowRight } from "lucide-react";
+import { useCartStore } from "@/store/cartStore";
 
 export default function FloatingCart() {
   const [mounted, setMounted] = useState(false);
-  const { items, updateQuantity, removeItem, getTotalPrice, getTotalItems } = useCartStore();
+  const { items, updateQuantity, removeItem, getTotalPrice, getTotalItems } =
+    useCartStore();
 
   useEffect(() => {
-    setMounted(true);
+    const id = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(id);
   }, []);
 
   // Show empty state during SSR to prevent hydration mismatch
   const cartItems = mounted ? items : [];
-  const totalPrice = mounted ? totalPrice : 0;
+  const totalPrice = mounted ? getTotalPrice : 0;
   const totalItems = mounted ? getTotalItems() : 0;
 
   return (
@@ -41,7 +43,7 @@ export default function FloatingCart() {
             <div className="p-8 text-center">
               <span className="text-5xl mb-3 block">🛒</span>
               <p className="text-gray-500 text-sm">Your cart is empty</p>
-              <Link 
+              <Link
                 href="/shop"
                 className="inline-block mt-3 text-sm text-green-600 hover:text-green-700 font-medium"
               >
@@ -69,12 +71,14 @@ export default function FloatingCart() {
                       <h4 className="font-medium text-gray-800 text-sm line-clamp-1">
                         {item.name}
                       </h4>
-                      <p className="text-xs text-gray-500 font-bengali">{item.nameBn}</p>
+                      <p className="text-xs text-gray-500 font-bengali">
+                        {item.nameBn}
+                      </p>
                       <div className="flex items-center justify-between mt-1">
                         <span className="font-semibold text-green-600">
                           ৳{item.price * item.quantity}
                         </span>
-                        
+
                         {/* Quantity Controls */}
                         <div className="flex items-center gap-1">
                           <button
@@ -87,13 +91,19 @@ export default function FloatingCart() {
                             }}
                             className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
                           >
-                            {item.quantity === 1 ? <Trash2 className="w-3.5 h-3.5" /> : <Minus className="w-3.5 h-3.5" />}
+                            {item.quantity === 1 ? (
+                              <Trash2 className="w-3.5 h-3.5" />
+                            ) : (
+                              <Minus className="w-3.5 h-3.5" />
+                            )}
                           </button>
                           <span className="w-6 text-center text-sm font-medium">
                             {item.quantity}
                           </span>
                           <button
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            onClick={() =>
+                              updateQuantity(item.id, item.quantity + 1)
+                            }
                             className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-green-500 hover:bg-green-50 rounded transition-colors"
                           >
                             <Plus className="w-3.5 h-3.5" />
@@ -116,12 +126,12 @@ export default function FloatingCart() {
               <span className="text-gray-600">Subtotal</span>
               <span className="font-semibold text-gray-900">৳{totalPrice}</span>
             </div>
-            
+
             {/* Delivery */}
             <div className="flex items-center justify-between mb-3 text-sm">
               <span className="text-gray-500">Delivery</span>
               <span className="text-green-600 font-medium">
-                {totalPrice >= 500 ? 'Free' : '৳50'}
+                {totalPrice >= 500 ? "Free" : "৳50"}
               </span>
             </div>
 
@@ -143,7 +153,9 @@ export default function FloatingCart() {
                 <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
-                    animate={{ width: `${Math.min((totalPrice / 500) * 100, 100)}%` }}
+                    animate={{
+                      width: `${Math.min((totalPrice / 500) * 100, 100)}%`,
+                    }}
                     className="h-full bg-green-500 rounded-full"
                   />
                 </div>
