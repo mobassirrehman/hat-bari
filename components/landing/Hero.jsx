@@ -2,205 +2,204 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, Truck, Shield, Clock } from "lucide-react";
+import { ArrowRight, Truck, ShieldCheck, RefreshCw, Gift } from "lucide-react";
 
 export default function Hero() {
   return (
-    <section className="relative min-h-[90vh] flex items-center bg-gradient-to-br from-green-50 via-white to-orange-50 overflow-hidden">
-      {/* Background Decorations */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 0.1 }}
-          transition={{ duration: 1, delay: 0.5 }}
-          className="absolute -top-20 -right-20 w-96 h-96 bg-green-500 rounded-full"
-        />
-        <motion.div
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 0.1 }}
-          transition={{ duration: 1, delay: 0.7 }}
-          className="absolute -bottom-32 -left-32 w-[500px] h-[500px] bg-orange-500 rounded-full"
-        />
-      </div>
-
-      <div className="container-custom relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left Content */}
-          <div className="text-center lg:text-left">
-            {/* Badge */}
+    // Added lg:mb-32 to create space for the floating cards at the bottom
+    <section className="relative bg-[#fafafa] overflow-visible pt-12 pb-12 lg:pt-20 lg:pb-32 lg:mb-24">
+      <div className="container mx-auto px-4 lg:px-8 relative z-10">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center mb-12 lg:mb-0">
+          {/* LEFT CONTENT */}
+          <div className="relative z-20 pt-4 text-center lg:text-left">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-2 bg-white border border-gray-200 rounded-full p-1.5 pr-5 mb-8 shadow-sm mx-auto lg:mx-0"
             >
-              <span className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-medium mb-6">
-                🎉 Free delivery on orders over ৳500
+              <span className="bg-[#d4f54c] text-teal-900 text-xs font-bold px-3 py-1 rounded-full">
+                New
+              </span>
+              <span className="text-sm font-medium text-gray-600">
+                Free shipping on your first order!
               </span>
             </motion.div>
 
-            {/* Main Heading */}
             <motion.h1
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight"
+              transition={{ delay: 0.2 }}
+              className="text-4xl sm:text-5xl lg:text-[5rem] font-black text-gray-900 leading-[1.1] mb-6 tracking-tight"
             >
-              <span className="font-bengali">আপনার পছন্দের</span>
+              Fresh{" "}
+              <span className="text-teal-700 relative inline-block">
+                Grocery
+                <svg
+                  className="absolute w-full h-3 -bottom-1 left-0 text-[#d4f54c]"
+                  viewBox="0 0 100 10"
+                  preserveAspectRatio="none"
+                >
+                  <path
+                    d="M0 5 Q 50 10 100 5"
+                    stroke="currentColor"
+                    strokeWidth="8"
+                    fill="none"
+                    opacity="0.6"
+                  />
+                </svg>
+              </span>
               <br />
-              <span className="text-green-600">Fresh Groceries</span>
-              <br />
-              <span className="font-bengali">এখন হাতের কাছে</span>
+              Daily Essentials.
             </motion.h1>
 
-            {/* Subtitle */}
             <motion.p
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-lg text-gray-600 mb-8 max-w-lg mx-auto lg:mx-0"
+              transition={{ delay: 0.3 }}
+              className="text-lg text-gray-500 mb-10 max-w-lg mx-auto lg:mx-0 leading-relaxed font-medium"
             >
-              Quality vegetables, fresh fruits, dairy products and all your
-              daily essentials delivered to your doorstep. Shop from হাটবাড়ি
-              today!
+              From farm to your table in minutes. Experience the freshest
+              vegetables, fruits, and bakery items with HatBari.
             </motion.p>
 
-            {/* CTA Buttons */}
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
+              transition={{ delay: 0.4 }}
+              className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start"
             >
               <Link
                 href="/shop"
-                className="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3.5 text-base"
+                className="w-full sm:w-auto bg-teal-700 hover:bg-teal-800 text-white px-8 py-4 rounded-full font-bold text-lg shadow-lg shadow-teal-700/30 hover:-translate-y-1 transition-all flex items-center justify-center gap-2"
               >
-                Shop Now
-                <ArrowRight className="w-5 h-5" />
+                Shop Now <ArrowRight className="w-5 h-5" />
               </Link>
               <Link
-                href="#categories"
-                className="btn-outline inline-flex items-center justify-center gap-2 px-8 py-3.5 text-base"
+                href="/shop"
+                className="w-full sm:w-auto bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 px-8 py-4 rounded-full font-bold text-lg hover:-translate-y-1 transition-all flex items-center justify-center"
               >
-                Browse Categories
+                View Categories
               </Link>
-            </motion.div>
-
-            {/* Trust Badges */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="mt-12 grid grid-cols-3 gap-4"
-            >
-              <div className="text-center">
-                <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mx-auto mb-2">
-                  <Truck className="w-6 h-6 text-green-500" />
-                </div>
-                <p className="text-xs text-gray-600 font-medium">
-                  Fast Delivery
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mx-auto mb-2">
-                  <Shield className="w-6 h-6 text-green-500" />
-                </div>
-                <p className="text-xs text-gray-600 font-medium">
-                  Secure Payment
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mx-auto mb-2">
-                  <Clock className="w-6 h-6 text-green-500" />
-                </div>
-                <p className="text-xs text-gray-600 font-medium">
-                  24/7 Support
-                </p>
-              </div>
             </motion.div>
           </div>
 
-          {/* Right Content - Hero Image */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8, x: 50 }}
-            animate={{ opacity: 1, scale: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative hidden lg:block"
-          >
-            <div className="relative w-full aspect-square max-w-lg mx-auto">
-              {/* Background circle */}
-              <div className="absolute inset-0 bg-gradient-to-br from-green-200 to-green-100 rounded-full" />
+          {/* RIGHT CONTENT - VISUAL */}
+          <div className="relative h-[300px] md:h-[400px] lg:h-[600px] flex items-center justify-center">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-b from-[#d4f54c]/30 to-transparent rounded-full blur-3xl opacity-60"></div>
 
-              {/* Hero image placeholder */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-[200px]">🛒</span>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8 }}
+              className="relative z-10 w-full max-w-md"
+            >
+              <div className="relative bg-[#e6ceaa] w-64 h-80 mx-auto rounded-b-2xl shadow-2xl flex items-end justify-center overflow-visible">
+                <div className="absolute inset-0 bg-black/5 rounded-b-2xl pointer-events-none"></div>
+                <div className="absolute -top-16 left-4 w-12 h-40 bg-green-500 rounded-full rotate-[-15deg] shadow-sm flex items-center justify-center border-4 border-white text-2xl">
+                  🥖
+                </div>
+                <div className="absolute -top-10 right-8 w-24 h-24 bg-red-500 rounded-full shadow-sm flex items-center justify-center border-4 border-white z-0 text-4xl">
+                  🍎
+                </div>
+                <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-20 h-48 bg-white border border-gray-200 rounded-lg rotate-[5deg] z-10 flex items-center justify-center shadow-md">
+                  <span className="text-xs font-bold text-blue-600 rotate-[-5deg]">
+                    MILK
+                  </span>
+                </div>
+                <div className="mb-12 text-center opacity-40 mix-blend-multiply">
+                  <h3 className="font-black text-3xl tracking-tighter text-[#5c4033]">
+                    HatBari
+                  </h3>
+                  <p className="text-[10px] font-bold uppercase tracking-widest">
+                    Fresh Market
+                  </p>
+                </div>
               </div>
 
-              {/* Floating product cards */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                animate={{ y: [0, -10, 0] }}
                 transition={{
-                  duration: 0.5,
-                  delay: 0.8,
+                  duration: 4,
                   repeat: Infinity,
-                  repeatType: "reverse",
-                  repeatDelay: 2,
+                  ease: "easeInOut",
                 }}
-                className="absolute -left-4 top-1/4 bg-white p-3 rounded-xl shadow-lg"
+                className="absolute top-10 right-0 lg:-right-10 bg-white p-3 rounded-2xl shadow-xl shadow-gray-200/50 flex items-center gap-3 pr-6"
               >
-                <div className="flex items-center gap-3">
-                  <span className="text-3xl">🥬</span>
-                  <div>
-                    <p className="font-medium text-sm">Fresh Vegetables</p>
-                    <p className="text-xs text-green-600">৳40/kg</p>
-                  </div>
+                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold">
+                  ৳
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400 font-bold uppercase">
+                    Price Drop
+                  </p>
+                  <p className="font-bold text-gray-800">Fresh Veggies</p>
                 </div>
               </motion.div>
+            </motion.div>
+          </div>
+        </div>
 
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.5,
-                  delay: 1,
-                  repeat: Infinity,
-                  repeatType: "reverse",
-                  repeatDelay: 2.5,
-                }}
-                className="absolute -right-4 top-1/3 bg-white p-3 rounded-xl shadow-lg"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-3xl">🍎</span>
-                  <div>
-                    <p className="font-medium text-sm">Red Apples</p>
-                    <p className="text-xs text-green-600">৳180/kg</p>
+        {/* RESPONSIVE FEATURE CARDS */}
+        {/* On Mobile/Tablet: It sits naturally in the flow (relative) */}
+        {/* On Desktop: It hangs at the bottom (absolute + translate-y-1/2) */}
+        <div className="relative lg:absolute lg:bottom-0 lg:left-0 lg:right-0 lg:translate-y-1/2 px-4 lg:px-8 z-30 mt-8 lg:mt-0">
+          <div className="container mx-auto">
+            <div className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 p-6 lg:p-10 border border-gray-100">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 divide-y md:divide-y-0 md:divide-x divide-gray-100">
+                {[
+                  {
+                    icon: Truck,
+                    color: "text-blue-500",
+                    bg: "bg-blue-50",
+                    title: "Fast Shipping",
+                    desc: "Receive order in 24h",
+                  },
+                  {
+                    icon: RefreshCw,
+                    color: "text-orange-500",
+                    bg: "bg-orange-50",
+                    title: "Return Policy",
+                    desc: "Easy returns within 30d",
+                  },
+                  {
+                    icon: ShieldCheck,
+                    color: "text-teal-500",
+                    bg: "bg-teal-50",
+                    title: "Payment Security",
+                    desc: "100% secure payment",
+                  },
+                  {
+                    icon: Gift,
+                    color: "text-purple-500",
+                    bg: "bg-purple-50",
+                    title: "Free Shipping",
+                    desc: "On orders over $100",
+                  },
+                ].map((item, i) => (
+                  <div
+                    key={i}
+                    className={`flex items-center gap-4 ${
+                      i > 0 ? "pt-6 md:pt-0 md:pl-8" : ""
+                    }`}
+                  >
+                    <div
+                      className={`w-14 h-14 rounded-2xl flex items-center justify-center ${item.bg} ${item.color} shrink-0 transition-transform hover:scale-110`}
+                    >
+                      <item.icon className="w-7 h-7" strokeWidth={1.5} />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-900 text-lg">
+                        {item.title}
+                      </h4>
+                      <p className="text-sm text-gray-500 font-medium">
+                        {item.desc}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.5,
-                  delay: 1.2,
-                  repeat: Infinity,
-                  repeatType: "reverse",
-                  repeatDelay: 3,
-                }}
-                className="absolute right-8 bottom-8 bg-white p-3 rounded-xl shadow-lg"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-3xl">🥛</span>
-                  <div>
-                    <p className="font-medium text-sm">Fresh Milk</p>
-                    <p className="text-xs text-green-600">৳75/liter</p>
-                  </div>
-                </div>
-              </motion.div>
+                ))}
+              </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

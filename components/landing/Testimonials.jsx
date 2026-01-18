@@ -3,141 +3,100 @@
 import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
 
+const testimonials = [
+  {
+    id: 1,
+    name: "Kamal Hossain",
+    role: "Regular Customer",
+    location: "Gulshan, Dhaka",
+    rating: 5,
+    text: "Excellent products! Their fish and meat section is amazing. Customer service is also very helpful.",
+    initial: "K",
+    color: "bg-blue-100 text-blue-700",
+  },
+  {
+    id: 2,
+    name: "Sultana Razia",
+    role: "Verified Buyer",
+    location: "Bashundhara, Dhaka",
+    rating: 5,
+    text: "Always fresh vegetables! Delivery is always on time and products are properly packed. Highly recommended.",
+    initial: "S",
+    color: "bg-pink-100 text-pink-700",
+  },
+  {
+    id: 3,
+    name: "Jamal Khan",
+    role: "Food Blogger",
+    location: "Banani, Dhaka",
+    rating: 4,
+    text: "Very convenient shopping experience. App is easy to use and delivery is always on time. Best in the city.",
+    initial: "J",
+    color: "bg-orange-100 text-orange-700",
+  },
+];
+
 export default function Testimonials() {
-  const testimonials = [
-    {
-      id: 1,
-      name: "Fatima Ahmed",
-      location: "Dhanmondi, Dhaka",
-      rating: 5,
-      text: "হাটবাড়ি থেকে শপিং করে অনেক খুশি! প্রোডাক্ট সবসময় ফ্রেশ থাকে এবং ডেলিভারি খুব দ্রুত হয়।",
-      avatar: "👩",
-    },
-    {
-      id: 2,
-      name: "Rahim Uddin",
-      location: "Uttara, Dhaka",
-      rating: 5,
-      text: "Best online grocery shop in Dhaka! The vegetables are always fresh and prices are reasonable.",
-      avatar: "👨",
-    },
-    {
-      id: 3,
-      name: "Nasrin Begum",
-      location: "Mirpur, Dhaka",
-      rating: 4,
-      text: "খুব ভালো সার্ভিস। বাসায় বসেই সব কেনাকাটা করতে পারি। সময় অনেক বাঁচে।",
-      avatar: "👩‍🦱",
-    },
-    {
-      id: 4,
-      name: "Kamal Hossain",
-      location: "Gulshan, Dhaka",
-      rating: 5,
-      text: "Excellent quality products! Their fish and meat section is amazing. Customer service is also very helpful.",
-      avatar: "👨‍🦳",
-    },
-    {
-      id: 5,
-      name: "Sultana Razia",
-      location: "Bashundhara, Dhaka",
-      rating: 5,
-      text: "ডেইলি ডিলস অনেক ভালো পাই। প্রতিদিনই কিছু না কিছু অফার থাকে।",
-      avatar: "👩‍🦰",
-    },
-    {
-      id: 6,
-      name: "Jamal Khan",
-      location: "Banani, Dhaka",
-      rating: 4,
-      text: "Very convenient shopping experience. App is easy to use and delivery is always on time.",
-      avatar: "🧔",
-    },
-  ];
-
   return (
-    <section className="py-16 bg-white overflow-hidden">
-      <div className="container-custom">
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
-        >
-          <span className="text-green-600 font-medium text-sm uppercase tracking-wider">
-            Testimonials
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mt-2 mb-4">
-            <span className="font-bengali">গ্রাহকদের মতামত</span>
+    <section className="py-24 bg-gray-50">
+      <div className="container mx-auto px-6 max-w-7xl">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold text-gray-900 mb-4 font-bengali">
+            গ্রাহকদের মতামত
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <div className="h-1 w-20 bg-primary-500 mx-auto rounded-full mb-6"></div>
+          <p className="text-gray-500 max-w-2xl mx-auto">
             See what our happy customers have to say about their shopping
-            experience with হাটবাড়ি
+            experience with Hatbari.
           </p>
-        </motion.div>
-      </div>
+        </div>
 
-      {/* Testimonials Marquee */}
-      <div className="relative">
-        {/* Gradient Overlays */}
-        <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
-
-        {/* Marquee Container */}
-        <motion.div
-          initial={{ x: 0 }}
-          whileInView={{ x: "-50%" }}
-          viewport={{ once: false, amount: 0.1 }}
-          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="flex gap-6 w-fit"
-        >
-          {/* Duplicate testimonials for seamless loop */}
-          {[...testimonials, ...testimonials].map((testimonial, index) => (
-            <div
-              key={`${testimonial.id}-${index}`}
-              className="w-[340px] shrink-0"
+        <div className="grid md:grid-cols-3 gap-8">
+          {testimonials.map((item, idx) => (
+            <motion.div
+              key={item.id}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: idx * 0.1 }}
+              className="bg-white p-10 rounded-2xl shadow-sm hover:shadow-soft-xl transition-all duration-300 border border-gray-100 relative overflow-hidden"
             >
-              <div className="bg-white border border-gray-200 rounded-2xl p-6 h-full shadow-sm">
-                {/* Quote Icon */}
-                <Quote className="w-8 h-8 text-green-200 mb-4" />
+              {/* Background Watermark */}
+              <Quote className="absolute top-4 right-6 w-24 h-24 text-gray-50 opacity-50 rotate-12 -z-0" />
 
-                {/* Rating */}
-                <div className="flex gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`w-4 h-4 ${
-                        i < testimonial.rating
-                          ? "fill-yellow-400 text-yellow-400"
-                          : "fill-gray-200 text-gray-200"
-                      }`}
-                    />
-                  ))}
+              <div className="flex gap-1 mb-6 relative z-10">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className={`w-4 h-4 ${
+                      i < item.rating
+                        ? "fill-yellow-400 text-yellow-400"
+                        : "fill-gray-200 text-gray-200"
+                    }`}
+                  />
+                ))}
+              </div>
+
+              <p className="text-gray-600 leading-8 text-lg mb-8 relative z-10">
+                {item.text}
+              </p>
+
+              <div className="flex items-center gap-4 relative z-10">
+                <div
+                  className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg ${item.color}`}
+                >
+                  {item.initial}
                 </div>
-
-                {/* Text */}
-                <p className="text-gray-600 mb-6 text-sm leading-relaxed">
-                  &ldquo;{testimonial.text}&rdquo;
-                </p>
-
-                {/* Author */}
-                <div className="flex items-center gap-3">
-                  <span className="text-3xl">{testimonial.avatar}</span>
-                  <div>
-                    <h4 className="font-semibold text-gray-800">
-                      {testimonial.name}
-                    </h4>
-                    <p className="text-sm text-gray-500">
-                      {testimonial.location}
-                    </p>
-                  </div>
+                <div>
+                  <h4 className="font-bold text-gray-900">{item.name}</h4>
+                  <p className="text-xs text-gray-400 uppercase tracking-wide font-medium">
+                    {item.location}
+                  </p>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

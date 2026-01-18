@@ -1,25 +1,28 @@
-import { Inter } from "next/font/google";
-import { Toaster } from "sonner";
-import AuthProvider from "@/components/providers/AuthProvider";
+// app/layout.js
 import "./globals.css";
+import { Inter } from "next/font/google";
+import AuthProvider from "@/components/providers/AuthProvider";
+import QueryProvider from "@/components/providers/QueryProvider"; // <--- Import this
+import { FloatingCart, MobileCartDrawer } from "@/components/shop";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "হাটবাড়ি - HatBari | Your Trusted Supershop",
-  description:
-    "Fresh groceries, daily essentials, and quality products delivered to your doorstep.",
-  keywords:
-    "grocery, supershop, bangladesh, fresh vegetables, fruits, dairy, hatbari",
+  title: "HatBari | Fresh Grocery",
+  description: "Fresh groceries delivered to your door.",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="bn">
+    <html lang="en">
       <body className={inter.className}>
         <AuthProvider>
-          {children}
-          <Toaster position="top-right" richColors closeButton />
+          <QueryProvider>
+            {" "}
+            {children}
+            <FloatingCart></FloatingCart>
+            <MobileCartDrawer></MobileCartDrawer>
+          </QueryProvider>
         </AuthProvider>
       </body>
     </html>

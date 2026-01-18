@@ -68,11 +68,7 @@ export default function TrustBadges() {
           {badges.map((badge, index) => {
             const Icon = badge.icon;
             return (
-              <motion.div
-                key={index}
-                variants={itemVariants}
-                className="group"
-              >
+              <motion.div key={index} variants={itemVariants} className="group">
                 <div className="flex items-start gap-4 p-6 bg-gray-50 rounded-2xl border border-gray-100 hover:border-primary-300 hover:shadow-lg transition-all duration-300">
                   <div
                     className={`w-14 h-14 ${badge.color} rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300`}

@@ -1,10 +1,12 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Link from "next/link";
-import { ShoppingCart, Heart, Star } from "lucide-react";
+import { ShoppingCart, Heart, Star, Eye } from "lucide-react";
+import { useState } from "react";
 
 export default function FeaturedProducts() {
+  const [wishlist, setWishlist] = useState({});
+
   const products = [
     {
       id: 1,
@@ -14,8 +16,8 @@ export default function FeaturedProducts() {
       originalPrice: 80,
       image: "🍅",
       rating: 4.5,
-      reviews: 24,
-      badge: "Sale",
+      discount: 25,
+      status: "In Stock",
     },
     {
       id: 2,
@@ -24,8 +26,7 @@ export default function FeaturedProducts() {
       price: 30,
       image: "🥬",
       rating: 4.8,
-      reviews: 42,
-      badge: "Fresh",
+      status: "Fresh",
     },
     {
       id: 3,
@@ -34,195 +35,135 @@ export default function FeaturedProducts() {
       price: 80,
       image: "🍌",
       rating: 4.6,
-      reviews: 35,
+      status: "Popular",
     },
     {
       id: 4,
-      name: "Farm Eggs",
-      nameBn: "ডিম",
+      name: "Farm Eggs (1 Dozen)",
+      nameBn: "ডিম (১ ডজন)",
       price: 140,
       originalPrice: 160,
       image: "🥚",
       rating: 4.9,
-      reviews: 67,
-      badge: "Best Seller",
+      discount: 12,
+      status: "Sale",
     },
-    {
-      id: 5,
-      name: "Fresh Milk",
-      nameBn: "দুধ",
-      price: 75,
-      image: "🥛",
-      rating: 4.7,
-      reviews: 53,
-    },
-    {
-      id: 6,
-      name: "Red Onions",
-      nameBn: "পেঁয়াজ",
-      price: 45,
-      image: "🧅",
-      rating: 4.4,
-      reviews: 28,
-    },
-    {
-      id: 7,
-      name: "Chicken Breast",
-      nameBn: "মুরগির মাংস",
-      price: 280,
-      originalPrice: 320,
-      image: "🍗",
-      rating: 4.6,
-      reviews: 45,
-      badge: "Sale",
-    },
-    {
-      id: 8,
-      name: "Whole Wheat Bread",
-      nameBn: "পাউরুটি",
-      price: 55,
-      image: "🍞",
-      rating: 4.5,
-      reviews: 31,
-    },
+  
   ];
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 },
-    },
+  const toggleWishlist = (id) => {
+    setWishlist((prev) => ({ ...prev, [id]: !prev[id] }));
   };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5 },
-    },
-  };
-
-  const formatPrice = (price) => `৳${price}`;
 
   return (
-    <section className="py-16 bg-gray-50">
-      <div className="container-custom">
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-12"
-        >
-          <div>
-            <span className="text-green-600 font-medium text-sm uppercase tracking-wider">
-              Top Picks
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mt-2">
-              <span className="font-bengali">জনপ্রিয় পণ্য</span>
-            </h2>
-          </div>
-          <Link href="/shop" className="btn-outline text-sm">
-            View All Products
-          </Link>
-        </motion.div>
+    <section className="py-20 bg-gray-50">
+      <div className="container mx-auto px-4 lg:px-8">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <span className="text-teal-600 font-bold tracking-wider text-xs uppercase mb-2 block">
+            Top Collection
+          </span>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900">
+            Featured Products
+          </h2>
+          <div className="w-20 h-1 bg-teal-500 mx-auto mt-4 rounded-full"></div>
+        </div>
 
-        {/* Products Grid */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
-        >
-          {products.map((product) => (
-            <motion.div key={product.id} variants={itemVariants}>
-              <div className="group card overflow-hidden">
-                {/* Image Container */}
-                <div className="relative bg-gray-50 p-6 flex items-center justify-center aspect-square">
-                  {/* Badge */}
-                  {product.badge && (
-                    <span
-                      className={`absolute top-3 left-3 px-2 py-1 text-xs font-medium rounded-lg
-                      ${
-                        product.badge === "Sale"
-                          ? "bg-orange-500 text-white"
-                          : product.badge === "Fresh"
-                          ? "bg-green-500 text-white"
-                          : "bg-gray-800 text-white"
+        {/* Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {products.map((product, index) => (
+            <motion.div
+              key={product.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.05 }}
+              className="bg-white rounded-2xl border border-gray-100 hover:border-teal-200 hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-300 group overflow-hidden relative"
+            >
+              {/* Floating Badges */}
+              <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
+                {product.discount && (
+                  <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm">
+                    -{product.discount}%
+                  </span>
+                )}
+                {product.status && !product.discount && (
+                  <span className="bg-teal-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm">
+                    {product.status}
+                  </span>
+                )}
+              </div>
+
+              {/* Action Buttons (Right) */}
+              <div className="absolute top-3 right-3 z-10 flex flex-col gap-2 translate-x-10 group-hover:translate-x-0 transition-transform duration-300">
+                <button
+                  onClick={() => toggleWishlist(product.id)}
+                  className={`w-9 h-9 rounded-full flex items-center justify-center shadow-md transition-colors ${
+                    wishlist[product.id]
+                      ? "bg-red-500 text-white"
+                      : "bg-white text-gray-500 hover:bg-teal-500 hover:text-white"
+                  }`}
+                >
+                  <Heart
+                    className={`w-4 h-4 ${
+                      wishlist[product.id] ? "fill-current" : ""
+                    }`}
+                  />
+                </button>
+                <button className="w-9 h-9 rounded-full bg-white text-gray-500 flex items-center justify-center shadow-md hover:bg-teal-500 hover:text-white transition-colors">
+                  <Eye className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Image Area */}
+              <div className="h-56 bg-gray-50 flex items-center justify-center relative">
+                <div className="text-7xl group-hover:scale-110 transition-transform duration-300 drop-shadow-sm">
+                  {product.image}
+                </div>
+              </div>
+
+              {/* Content Area */}
+              <div className="p-5">
+                <div className="flex items-center gap-1 mb-2">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`w-3 h-3 ${
+                        i < Math.floor(product.rating)
+                          ? "fill-yellow-400 text-yellow-400"
+                          : "fill-gray-200 text-gray-200"
                       }`}
-                    >
-                      {product.badge}
-                    </span>
-                  )}
-
-                  {/* Wishlist Button */}
-                  <button
-                    className="absolute top-3 right-3 w-8 h-8 bg-white rounded-full shadow-sm
-                                   flex items-center justify-center opacity-0 group-hover:opacity-100
-                                   hover:bg-red-50 hover:text-red-500 transition-all duration-300"
-                  >
-                    <Heart className="w-4 h-4" />
-                  </button>
-
-                  {/* Product Image */}
-                  <span className="text-7xl group-hover:scale-110 transition-transform duration-300">
-                    {product.image}
+                    />
+                  ))}
+                  <span className="text-xs text-gray-400 ml-1">
+                    ({product.rating})
                   </span>
                 </div>
 
-                {/* Product Info */}
-                <div className="p-4">
-                  {/* Rating */}
-                  <div className="flex items-center gap-1 mb-2">
-                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    <span className="text-sm font-medium text-gray-700">
-                      {product.rating}
-                    </span>
-                    <span className="text-xs text-gray-400">
-                      ({product.reviews})
-                    </span>
-                  </div>
+                <h3 className="font-bold text-gray-900 text-base mb-1 hover:text-teal-600 transition-colors cursor-pointer truncate">
+                  {product.name}
+                </h3>
+                <p className="text-xs text-gray-500 mb-4">{product.nameBn}</p>
 
-                  {/* Name */}
-                  <Link href={`/shop/${product.id}`}>
-                    <h3 className="font-medium text-gray-800 hover:text-green-600 transition-colors line-clamp-1">
-                      {product.name}
-                    </h3>
-                  </Link>
-                  <p className="text-sm text-gray-500 font-bengali">
-                    {product.nameBn}
-                  </p>
-
-                  {/* Price & Cart */}
-                  <div className="flex items-center justify-between mt-3">
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-lg text-gray-900">
-                        {formatPrice(product.price)}
+                <div className="flex items-center justify-between">
+                  <div>
+                    {product.originalPrice && (
+                      <span className="text-xs text-gray-400 line-through block">
+                        ৳{product.originalPrice}
                       </span>
-                      {product.originalPrice && (
-                        <span className="text-sm text-gray-400 line-through">
-                          {formatPrice(product.originalPrice)}
-                        </span>
-                      )}
-                    </div>
-
-                    <button
-                      className="w-9 h-9 bg-green-50 hover:bg-green-500 text-green-600 
-                                     hover:text-white rounded-lg flex items-center justify-center
-                                     transition-colors duration-200"
-                    >
-                      <ShoppingCart className="w-4 h-4" />
-                    </button>
+                    )}
+                    <span className="text-lg font-bold text-teal-700">
+                      ৳{product.price}
+                    </span>
                   </div>
+                  <button className="bg-gray-100 hover:bg-teal-600 hover:text-white text-gray-900 p-2.5 rounded-lg transition-all">
+                    <ShoppingCart className="w-5 h-5" />
+                  </button>
                 </div>
               </div>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

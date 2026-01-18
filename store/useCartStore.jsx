@@ -1,31 +1,29 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-// create() makes the store
-// persist() saves to localStorage so cart survives page refresh
 export const useCartStore = create(
   persist(
     (set, get) => ({
       items: [],
+      isOpen: false,
 
-      // Add item to cart
+      toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
+
       addItem: (product) => {
         set((state) => {
           const existingItem = state.items.find(
-            (item) => item.id === product.id
+            (item) => item._id === product._id
           );
 
           if (existingItem) {
-            // If item exists, increase quantity
             return {
               items: state.items.map((item) =>
-                item.id === product.id
+                item._id === product._id
                   ? { ...item, quantity: item.quantity + 1 }
                   : item
               ),
             };
           } else {
-            // If new item, add to cart
             return {
               items: [...state.items, { ...product, quantity: 1 }],
             };
@@ -33,19 +31,17 @@ export const useCartStore = create(
         });
       },
 
-      // Remove item from cart
       removeItem: (productId) => {
         set((state) => ({
-          items: state.items.filter((item) => item.id !== productId),
+          items: state.items.filter((item) => item._id !== productId),
         }));
       },
 
-      // Update item quantity
       updateQuantity: (productId, quantity) => {
         set((state) => ({
           items: state.items
             .map((item) =>
-              item.id === productId
+              item._id === productId
                 ? { ...item, quantity: Math.max(0, quantity) }
                 : item
             )
@@ -53,19 +49,11 @@ export const useCartStore = create(
         }));
       },
 
-      // Clear entire cart
       clearCart: () => {
         set({ items: [] });
       },
 
-      // Get total number of items
-      getTotalItems: () => {
-        const { items } = get();
-        return items.reduce((total, item) => total + item.quantity, 0);
-      },
-
-      // Get total price
-      getTotalPrice: () => {
+      getCartTotal: () => {
         const { items } = get();
         return items.reduce(
           (total, item) => total + item.price * item.quantity,
@@ -73,21 +61,22 @@ export const useCartStore = create(
         );
       },
 
-      // Check if item is in cart
-      isInCart: (productId) => {
+      getCartCount: () => {
         const { items } = get();
-        return items.some((item) => item.id === productId);
+        return items.reduce((total, item) => total + item.quantity, 0);
       },
 
-      // Get item quantity
       getItemQuantity: (productId) => {
         const { items } = get();
-        const item = items.find((item) => item.id === productId);
+        const item = items.find((item) => item._id === productId);
         return item?.quantity || 0;
       },
     }),
     {
-      name: "hatbari-cart", // localStorage key
+      name: "hatbari-cart", // Saves to localStorage
+      partialize: (state) => ({ items: state.items }), // Don't save isOpen state
     }
   )
 );
+
+export default useCartStore;
