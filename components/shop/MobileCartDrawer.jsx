@@ -2,6 +2,7 @@
 
 import { X, Plus, Minus, Trash2 } from "lucide-react";
 import { useCartStore } from "@/store/useCartStore";
+import Link from "next/link";
 export default function MobileCartDrawer() {
   const { items, isOpen, toggleCart, removeItem, updateQuantity } =
     useCartStore();
@@ -23,7 +24,6 @@ export default function MobileCartDrawer() {
         }`}
       >
         <div className="flex flex-col h-full">
-          {/* Header */}
           <div className="p-5 border-b flex justify-between items-center bg-gray-50">
             <h2 className="text-xl font-bold text-gray-800">
               Your Cart ({items.length})
@@ -55,7 +55,6 @@ export default function MobileCartDrawer() {
                   className="flex gap-4 border-b border-gray-100 pb-4"
                 >
                   <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center text-3xl">
-                    {/* If you have images, use <Image> tag here. Using emoji for now based on your data */}
                     {item.image}
                   </div>
                   <div className="flex-1">
@@ -115,9 +114,13 @@ export default function MobileCartDrawer() {
                   )}
                 </span>
               </div>
-              <button className="w-full bg-teal-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-teal-700 transition-colors shadow-lg shadow-teal-600/20">
+              <Link
+                href="/checkout"
+                onClick={toggleCart}
+                className="w-full bg-teal-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-teal-700 transition-colors shadow-lg shadow-teal-600/20 block text-center"
+              >
                 Checkout Now
-              </button>
+              </Link>
             </div>
           )}
         </div>

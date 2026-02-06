@@ -2,18 +2,20 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, Truck, ShieldCheck, RefreshCw, Gift, Zap } from "lucide-react";
+import {
+  ArrowRight,
+  Truck,
+  ShieldCheck,
+  RefreshCw,
+  Gift,
+  Zap,
+} from "lucide-react";
 
 export default function Hero() {
   return (
-    // ✅ FIX APPLIED: Added 'md:mb-32' to force a gap below the hero on tablets
     <section className="relative bg-[#fafafa] overflow-visible pt-8 pb-12 md:pb-24 md:mb-32 lg:pt-20 lg:pb-32 lg:mb-24">
-      
-      {/* MAIN CONTENT */}
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center mb-12 md:mb-0">
-          
-          {/* LEFT CONTENT */}
           <div className="relative z-20 pt-4 text-center lg:text-left">
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -77,7 +79,7 @@ export default function Hero() {
               >
                 Shop Now <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
               </Link>
-              
+
               <Link
                 href="/shop?sort=popular"
                 className="w-auto min-w-[160px] bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 px-6 py-3 sm:px-8 sm:py-4 rounded-full font-bold text-sm sm:text-lg hover:-translate-y-1 transition-all flex items-center justify-center gap-2"
@@ -88,7 +90,6 @@ export default function Hero() {
             </motion.div>
           </div>
 
-          {/* RIGHT CONTENT - VISUAL */}
           <div className="relative h-[280px] md:h-[400px] lg:h-[600px] flex items-center justify-center mt-8 lg:mt-0">
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-b from-[#d4f54c]/30 to-transparent rounded-full blur-3xl opacity-60"></div>
 
@@ -123,15 +124,23 @@ export default function Hero() {
 
               <motion.div
                 animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
                 className="absolute top-6 lg:top-10 -right-2 lg:-right-10 bg-white p-2 lg:p-3 rounded-xl lg:rounded-2xl shadow-xl shadow-gray-200/50 flex items-center gap-2 lg:gap-3 pr-4 lg:pr-6"
               >
                 <div className="w-8 h-8 lg:w-10 lg:h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold text-sm lg:text-base">
                   ৳
                 </div>
                 <div>
-                  <p className="text-[10px] lg:text-xs text-gray-400 font-bold uppercase">Price Drop</p>
-                  <p className="font-bold text-xs lg:text-base text-gray-800">Fresh Veggies</p>
+                  <p className="text-[10px] lg:text-xs text-gray-400 font-bold uppercase">
+                    Price Drop
+                  </p>
+                  <p className="font-bold text-xs lg:text-base text-gray-800">
+                    Fresh Veggies
+                  </p>
                 </div>
               </motion.div>
             </motion.div>
@@ -145,10 +154,34 @@ export default function Hero() {
           <div className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 p-6 lg:p-10 border border-gray-100">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 divide-y md:divide-y-0 md:divide-x divide-gray-100">
               {[
-                { icon: Truck, color: "text-blue-500", bg: "bg-blue-50", title: "Fast Shipping", desc: "Receive order in 24h" },
-                { icon: RefreshCw, color: "text-orange-500", bg: "bg-orange-50", title: "Return Policy", desc: "Easy returns within 30d" },
-                { icon: ShieldCheck, color: "text-teal-500", bg: "bg-teal-50", title: "Payment Security", desc: "100% secure payment" },
-                { icon: Gift, color: "text-purple-500", bg: "bg-purple-50", title: "Free Shipping", desc: "On orders over $100" },
+                {
+                  icon: Truck,
+                  color: "text-blue-500",
+                  bg: "bg-blue-50",
+                  title: "Fast Shipping",
+                  desc: "Receive order in 24h",
+                },
+                {
+                  icon: RefreshCw,
+                  color: "text-orange-500",
+                  bg: "bg-orange-50",
+                  title: "Return Policy",
+                  desc: "Easy returns within 30d",
+                },
+                {
+                  icon: ShieldCheck,
+                  color: "text-teal-500",
+                  bg: "bg-teal-50",
+                  title: "Payment Security",
+                  desc: "100% secure payment",
+                },
+                {
+                  icon: Gift,
+                  color: "text-purple-500",
+                  bg: "bg-purple-50",
+                  title: "Free Shipping",
+                  desc: "On orders over ৳500",
+                },
               ].map((item, i) => (
                 <div
                   key={i}
@@ -156,12 +189,21 @@ export default function Hero() {
                     i > 0 ? "pt-6 md:pt-0 md:pl-8" : ""
                   }`}
                 >
-                  <div className={`w-12 h-12 lg:w-14 lg:h-14 rounded-2xl flex items-center justify-center ${item.bg} ${item.color} shrink-0 transition-transform hover:scale-110`}>
-                    <item.icon className="w-6 h-6 lg:w-7 lg:h-7" strokeWidth={1.5} />
+                  <div
+                    className={`w-12 h-12 lg:w-14 lg:h-14 rounded-2xl flex items-center justify-center ${item.bg} ${item.color} shrink-0 transition-transform hover:scale-110`}
+                  >
+                    <item.icon
+                      className="w-6 h-6 lg:w-7 lg:h-7"
+                      strokeWidth={1.5}
+                    />
                   </div>
                   <div>
-                    <h4 className="font-bold text-gray-900 text-base lg:text-lg">{item.title}</h4>
-                    <p className="text-xs lg:text-sm text-gray-500 font-medium">{item.desc}</p>
+                    <h4 className="font-bold text-gray-900 text-base lg:text-lg">
+                      {item.title}
+                    </h4>
+                    <p className="text-xs lg:text-sm text-gray-500 font-medium">
+                      {item.desc}
+                    </p>
                   </div>
                 </div>
               ))}

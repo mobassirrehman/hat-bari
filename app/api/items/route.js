@@ -1,37 +1,33 @@
-import { NextResponse } from "next/server";
-import clientPromise from "@/lib/mongodb";
+import { getDb } from "@/lib/db";
+
+function escapeRegex(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 
 export async function GET(request) {
   try {
-    const client = await clientPromise;
-    const db = client.db("hatbari");
-
+    const db = await getDb();
     const { searchParams } = new URL(request.url);
+
     const category = searchParams.get("category");
     const search = searchParams.get("search");
-    const limit = parseInt(searchParams.get("limit") || "20");
 
     let query = {};
 
-    if (category && category !== "all") {
-      query.category = { $regex: new RegExp(`^${category}$`, "i") };
+    if (category && category !== "All") {
+      query.category = {
+        $regex: new RegExp(`^${escapeRegex(category)}$`, "i"),
+      };
     }
 
     if (search) {
-      query.$or = [
-        { name: { $regex: search, $options: "i" } },
-        { nameBn: { $regex: search, $options: "i" } },
-      ];
+      query.name = { $regex: new RegExp(escapeRegex(search), "i") };
     }
 
-    const items = await db
-      .collection("items")
-      .find(query)
-      .limit(limit)
-      .toArray();
-
-    return NextResponse.json({ items, total: items.length });
+    const items = await db.collection("items").find(query).toArray();
+    return Response.json({ items });
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("Items fetch error:", error);
+    return Response.json({ error: "Failed to fetch items" }, { status: 500 });
   }
 }

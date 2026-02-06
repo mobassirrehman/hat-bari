@@ -24,10 +24,14 @@ export default function RegisterPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/auth/register", {
+      const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, role: userRole }),
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        }),
       });
 
       const data = await response.json();
@@ -127,33 +131,6 @@ export default function RegisterPage() {
                 )}
               </button>
             </div>
-          </div>
-
-          <div className="flex items-center gap-6">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="role"
-                checked={userRole === "customer"}
-                onChange={() => setUserRole("customer")}
-                className="w-4 h-4 text-teal-600 focus:ring-teal-600 border-gray-300"
-              />
-              <span className="text-sm font-bold text-gray-700">
-                I am a customer
-              </span>
-            </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="role"
-                checked={userRole === "vendor"}
-                onChange={() => setUserRole("vendor")}
-                className="w-4 h-4 text-teal-600 focus:ring-teal-600 border-gray-300"
-              />
-              <span className="text-sm font-bold text-gray-700">
-                I am a vendor
-              </span>
-            </label>
           </div>
 
           <button

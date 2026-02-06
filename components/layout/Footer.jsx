@@ -73,13 +73,13 @@ export default function Footer() {
             <div className="text-sm text-gray-500 space-y-3">
               <p className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-gray-400 shrink-0" />
-                75 Hoel Trok Station Road,
+                Level 4, HatBari HQ,
                 <br />
-                Cardiff, UK
+                Dhaka, Bangladesh
               </p>
               <p className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-gray-400 shrink-0" />
-                info@example.com
+                support@hatbari.com
               </p>
             </div>
             <div className="flex gap-4 pt-2">
@@ -172,7 +172,7 @@ export default function Footer() {
       <div className="border-t border-gray-100 bg-gray-50">
         <div className="container mx-auto px-6 py-6 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
           <p>
-            © {new Date().getFullYear()} ContestHub. Made by TheGrim. All rights
+            © {new Date().getFullYear()} HatBari. Made by TheGrim. All rights
             reserved.
           </p>
           <div className="flex gap-4 grayscale opacity-60">
