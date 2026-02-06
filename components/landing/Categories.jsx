@@ -115,7 +115,8 @@ export default function Categories() {
                           {category.name}
                         </h3>
                         <p className="text-xs text-gray-400 font-medium mt-0.5 font-bengali">
-                          {category.nameBn} • {category.count} Products
+                          {category.nameBn} • {category.count}{" "}
+                          {category.count === 1 ? "Product" : "Products"}
                         </p>
                       </div>
                     </div>

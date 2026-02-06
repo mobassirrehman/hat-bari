@@ -16,7 +16,7 @@ import {
   Heart,
   Loader2,
 } from "lucide-react";
-import { Navbar } from "@/components/layout"; // Adjust path if needed
+import { Navbar } from "@/components/layout";
 import { useCartStore } from "@/store/useCartStore";
 import { toast } from "sonner";
 
@@ -50,7 +50,7 @@ export default function ItemDetailsPage() {
   const handleAddToCart = () => {
     if (!product) return;
     addItem({
-      _id: product._id, // Ensure this matches your store ID key
+      _id: product._id,
       name: product.name,
       nameBn: product.nameBn,
       price: product.price,

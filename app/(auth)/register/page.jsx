@@ -12,7 +12,6 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  const [userRole, setUserRole] = useState("customer");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -34,9 +33,9 @@ export default function RegisterPage() {
         }),
       });
 
-      const data = await response.json();
+      const data = await res.json();
 
-      if (response.ok) {
+      if (res.ok) {
         toast.success("Account created! Please login.");
         router.push("/login");
       } else {
