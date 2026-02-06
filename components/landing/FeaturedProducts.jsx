@@ -1,58 +1,56 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ShoppingCart, Heart, Star, Eye } from "lucide-react";
-import { useState } from "react";
+import { ShoppingCart, Star, Loader2 } from "lucide-react";
+import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
+import { useCartStore } from "@/store/useCartStore";
+import { toast } from "sonner";
+
+const fetchFeatured = async () => {
+  const res = await fetch("/api/items?limit=4");
+  if (!res.ok) throw new Error("Failed to fetch");
+  const data = await res.json();
+  return Array.isArray(data) ? data : data.items || [];
+};
 
 export default function FeaturedProducts() {
-  const [wishlist, setWishlist] = useState({});
+  const { addItem } = useCartStore();
 
-  const products = [
-    {
-      id: 1,
-      name: "Fresh Tomatoes",
-      nameBn: "টমেটো",
-      price: 60,
-      originalPrice: 80,
-      image: "🍅",
-      rating: 4.5,
-      discount: 25,
-      status: "In Stock",
-    },
-    {
-      id: 2,
-      name: "Green Spinach",
-      nameBn: "পালং শাক",
-      price: 30,
-      image: "🥬",
-      rating: 4.8,
-      status: "Fresh",
-    },
-    {
-      id: 3,
-      name: "Organic Bananas",
-      nameBn: "কলা",
-      price: 80,
-      image: "🍌",
-      rating: 4.6,
-      status: "Popular",
-    },
-    {
-      id: 4,
-      name: "Farm Eggs (1 Dozen)",
-      nameBn: "ডিম (১ ডজন)",
-      price: 140,
-      originalPrice: 160,
-      image: "🥚",
-      rating: 4.9,
-      discount: 12,
-      status: "Sale",
-    },
-  ];
+  const {
+    data: products = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["featured-products"],
+    queryFn: fetchFeatured,
+    staleTime: 5 * 60 * 1000,
+  });
 
-  const toggleWishlist = (id) => {
-    setWishlist((prev) => ({ ...prev, [id]: !prev[id] }));
+  const handleAddToCart = (product) => {
+    addItem({
+      _id: product._id,
+      name: product.name,
+      nameBn: product.nameBn,
+      price: product.price,
+      image: product.image,
+      quantity: 1,
+    });
+    toast.success(`${product.name} added to cart`);
   };
+
+  if (isLoading) {
+    return (
+      <section className="py-20 bg-gray-50">
+        <div className="container mx-auto px-4 lg:px-8 text-center">
+          <Loader2 className="w-8 h-8 text-teal-600 animate-spin mx-auto" />
+          <p className="text-gray-400 mt-3">Loading products...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (isError || !Array.isArray(products) || products.length === 0) return null;
 
   return (
     <section className="py-20 bg-gray-50">
@@ -70,98 +68,91 @@ export default function FeaturedProducts() {
 
         {/* Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {products.map((product, index) => (
-            <motion.div
-              key={product.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.05 }}
-              className="bg-white rounded-2xl border border-gray-100 hover:border-teal-200 hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-300 group overflow-hidden relative"
-            >
-              {/* Floating Badges */}
-              <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
-                {product.discount && (
-                  <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm">
-                    -{product.discount}%
-                  </span>
-                )}
-                {product.status && !product.discount && (
-                  <span className="bg-teal-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm">
-                    {product.status}
-                  </span>
-                )}
-              </div>
+          {products.slice(0, 4).map((product, index) => {
+            const discount = product.originalPrice
+              ? Math.round(
+                  ((product.originalPrice - product.price) /
+                    product.originalPrice) *
+                    100
+                )
+              : 0;
 
-              {/* Action Buttons (Right) */}
-              <div className="absolute top-3 right-3 z-10 flex flex-col gap-2 transition-transform duration-300 translate-x-0 lg:translate-x-10 lg:group-hover:translate-x-0">
-                <button
-                  onClick={() => toggleWishlist(product.id)}
-                  className={`w-9 h-9 rounded-full flex items-center justify-center shadow-md transition-colors ${
-                    wishlist[product.id]
-                      ? "bg-red-500 text-white"
-                      : "bg-white text-gray-500 hover:bg-teal-500 hover:text-white"
-                  }`}
-                >
-                  <Heart
-                    className={`w-4 h-4 ${
-                      wishlist[product.id] ? "fill-current" : ""
-                    }`}
-                  />
-                </button>
-                <button className="w-9 h-9 rounded-full bg-white text-gray-500 flex items-center justify-center shadow-md hover:bg-teal-500 hover:text-white transition-colors">
-                  <Eye className="w-4 h-4" />
-                </button>
-              </div>
-
-              {/* Image Area */}
-              <div className="h-56 bg-gray-50 flex items-center justify-center relative">
-                <div className="text-7xl group-hover:scale-110 transition-transform duration-300 drop-shadow-sm">
-                  {product.image}
-                </div>
-              </div>
-
-              {/* Content Area */}
-              <div className="p-5">
-                <div className="flex items-center gap-1 mb-2">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`w-3 h-3 ${
-                        i < Math.floor(product.rating)
-                          ? "fill-yellow-400 text-yellow-400"
-                          : "fill-gray-200 text-gray-200"
-                      }`}
-                    />
-                  ))}
-                  <span className="text-xs text-gray-400 ml-1">
-                    ({product.rating})
-                  </span>
-                </div>
-
-                <h3 className="font-bold text-gray-900 text-base mb-1 hover:text-teal-600 transition-colors cursor-pointer truncate">
-                  {product.name}
-                </h3>
-                <p className="text-xs text-gray-500 mb-4">{product.nameBn}</p>
-
-                <div className="flex items-center justify-between">
-                  <div>
-                    {product.originalPrice && (
-                      <span className="text-xs text-gray-400 line-through block">
-                        ৳{product.originalPrice}
-                      </span>
-                    )}
-                    <span className="text-lg font-bold text-teal-700">
-                      ৳{product.price}
+            return (
+              <motion.div
+                key={product._id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.05 }}
+                className="bg-white rounded-2xl border border-gray-100 hover:border-teal-200 hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-300 group overflow-hidden relative"
+              >
+                {/* Badge */}
+                {discount > 0 && (
+                  <div className="absolute top-3 left-3 z-10">
+                    <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm">
+                      -{discount}%
                     </span>
                   </div>
-                  <button className="bg-gray-100 hover:bg-teal-600 hover:text-white text-gray-900 p-2.5 rounded-lg transition-all">
-                    <ShoppingCart className="w-5 h-5" />
-                  </button>
+                )}
+
+                {/* Image Area */}
+                <Link href={`/shop/${product._id}`}>
+                  <div className="h-56 bg-gray-50 flex items-center justify-center relative cursor-pointer">
+                    <div className="text-7xl group-hover:scale-110 transition-transform duration-300 drop-shadow-sm">
+                      {product.image}
+                    </div>
+                  </div>
+                </Link>
+
+                {/* Content Area */}
+                <div className="p-5">
+                  <div className="flex items-center gap-1 mb-2">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`w-3 h-3 ${
+                          i < Math.floor(product.rating || 4.5)
+                            ? "fill-yellow-400 text-yellow-400"
+                            : "fill-gray-200 text-gray-200"
+                        }`}
+                      />
+                    ))}
+                    <span className="text-xs text-gray-400 ml-1">
+                      ({product.rating || 4.5})
+                    </span>
+                  </div>
+
+                  <Link href={`/shop/${product._id}`}>
+                    <h3 className="font-bold text-gray-900 text-base mb-1 hover:text-teal-600 transition-colors cursor-pointer truncate">
+                      {product.name}
+                    </h3>
+                  </Link>
+                  <p className="text-xs text-gray-500 mb-4 font-bengali">
+                    {product.nameBn}
+                  </p>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      {product.originalPrice && (
+                        <span className="text-xs text-gray-400 line-through block">
+                          ৳{product.originalPrice}
+                        </span>
+                      )}
+                      <span className="text-lg font-bold text-teal-700">
+                        ৳{product.price}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => handleAddToCart(product)}
+                      className="bg-gray-100 hover:bg-teal-600 hover:text-white text-gray-900 p-2.5 rounded-lg transition-all"
+                    >
+                      <ShoppingCart className="w-5 h-5" />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>

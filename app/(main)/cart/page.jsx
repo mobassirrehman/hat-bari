@@ -25,7 +25,7 @@ export default function CartPage() {
 
   const subtotal =
     items?.reduce((total, item) => total + item.price * item.quantity, 0) || 0;
-  const shipping = subtotal > 100 ? 0 : 60; // Free shipping logic
+  const shipping = subtotal > 500 ? 0 : 60; // Free shipping logic
   const total = subtotal + shipping;
 
   if (!mounted) {
@@ -147,9 +147,12 @@ export default function CartPage() {
               </div>
             </div>
 
-            <button className="w-full bg-teal-700 hover:bg-teal-800 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-teal-700/20 transition-all hover:scale-[1.02]">
+            <Link
+              href="/checkout"
+              className="w-full bg-teal-700 hover:bg-teal-800 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-teal-700/20 transition-all hover:scale-[1.02]"
+            >
               Proceed to Checkout <ArrowRight className="w-5 h-5" />
-            </button>
+            </Link>
 
             <p className="text-xs text-gray-400 text-center mt-4">
               Secure checkout provided by HatBari
