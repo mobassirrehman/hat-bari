@@ -48,7 +48,6 @@ export default function FeaturedProducts() {
       discount: 12,
       status: "Sale",
     },
-  
   ];
 
   const toggleWishlist = (id) => {
@@ -95,7 +94,7 @@ export default function FeaturedProducts() {
               </div>
 
               {/* Action Buttons (Right) */}
-              <div className="absolute top-3 right-3 z-10 flex flex-col gap-2 translate-x-10 group-hover:translate-x-0 transition-transform duration-300">
+              <div className="absolute top-3 right-3 z-10 flex flex-col gap-2 transition-transform duration-300 translate-x-0 lg:translate-x-10 lg:group-hover:translate-x-0">
                 <button
                   onClick={() => toggleWishlist(product.id)}
                   className={`w-9 h-9 rounded-full flex items-center justify-center shadow-md transition-colors ${

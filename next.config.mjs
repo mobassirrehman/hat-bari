@@ -1,12 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  async rewrites() {
-    return [
+  images: {
+    remotePatterns: [
       {
-        source: "/api/:path((?!auth).*)",
-        destination: "http://localhost:5000/api/:path",
+        protocol: "https",
+        hostname: "**",
       },
-    ];
+    ],
   },
 };
 

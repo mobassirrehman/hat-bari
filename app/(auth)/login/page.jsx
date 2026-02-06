@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2, Sparkles, UserCheck } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 
@@ -44,11 +44,19 @@ export default function LoginPage() {
     await signIn("google", { callbackUrl: "/" });
   };
 
+  const fillMockCredentials = () => {
+    setFormData({
+      email: "thegrim@gmail.com",
+      password: "@Abcd1234",
+    });
+    toast.info("Demo credentials filled!");
+  };
+
   return (
     <div className="min-h-[80vh] flex items-center justify-center bg-white py-20">
       <div className="w-full max-w-[500px] px-6">
         {/* Header Tabs */}
-        <div className="flex items-center gap-8 mb-10">
+        <div className="flex items-center gap-8 mb-8">
           <h1 className="text-3xl font-bold text-gray-900 border-b-2 border-teal-600 pb-1 cursor-default">
             Login
           </h1>
@@ -64,6 +72,16 @@ export default function LoginPage() {
           Log in with your email and password.
         </p>
 
+        {/* Mock Credential Card */}
+        <button
+          type="button"
+          onClick={fillMockCredentials}
+          className="w-full mb-6 py-3 px-4 bg-teal-50 hover:bg-teal-100 border border-teal-200 border-dashed rounded-xl text-teal-700 text-sm font-semibold transition-all flex items-center justify-center gap-2 group active:scale-[0.98]"
+        >
+          <Sparkles className="w-4 h-4 text-teal-500 group-hover:rotate-12 transition-transform" />
+          <span>Tap to auto-fill Demo Account</span>
+        </button>
+
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-2">
@@ -72,7 +90,8 @@ export default function LoginPage() {
             <input
               type="email"
               required
-              className="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all text-gray-800"
+              placeholder="name@example.com"
+              className="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all text-gray-800 placeholder:text-gray-300"
               value={formData.email}
               onChange={(e) =>
                 setFormData({ ...formData, email: e.target.value })
@@ -88,7 +107,8 @@ export default function LoginPage() {
               <input
                 type={showPassword ? "text" : "password"}
                 required
-                className="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all text-gray-800"
+                placeholder="Enter your password"
+                className="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all text-gray-800 placeholder:text-gray-300"
                 value={formData.password}
                 onChange={(e) =>
                   setFormData({ ...formData, password: e.target.value })

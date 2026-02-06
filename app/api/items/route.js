@@ -1,33 +1,36 @@
 import { NextResponse } from "next/server";
-
-const API_URL = process.env.API_URL || "http://localhost:5000";
+import clientPromise from "@/lib/mongodb";
 
 export async function GET(request) {
   try {
+    const client = await clientPromise;
+    const db = client.db("hatbari");
+
     const { searchParams } = new URL(request.url);
-    const queryString = searchParams.toString();
+    const category = searchParams.get("category");
+    const search = searchParams.get("search");
+    const limit = parseInt(searchParams.get("limit") || "20");
 
-    const response = await fetch(`${API_URL}/api/items?${queryString}`);
-    const data = await response.json();
+    let query = {};
 
-    return NextResponse.json(data);
-  } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-}
+    if (category && category !== "all") {
+      query.category = { $regex: new RegExp(`^${category}$`, "i") };
+    }
 
-export async function POST(request) {
-  try {
-    const body = await request.json();
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { nameBn: { $regex: search, $options: "i" } },
+      ];
+    }
 
-    const response = await fetch(`${API_URL}/api/items`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
+    const items = await db
+      .collection("items")
+      .find(query)
+      .limit(limit)
+      .toArray();
 
-    const data = await response.json();
-    return NextResponse.json(data, { status: 201 });
+    return NextResponse.json({ items, total: items.length });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

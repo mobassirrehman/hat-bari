@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 
 const fetchCategories = async () => {
-  const res = await fetch("http://localhost:5000/api/categories");
+  const res = await fetch("/api/categories");
 
   if (!res.ok) {
     const errorText = await res.text();
@@ -55,7 +55,7 @@ export default function Categories() {
         <p className="text-red-500 font-bold mb-2">Error loading categories</p>
         <p className="text-sm text-red-400 mb-4">{error.message}</p>
         <p className="text-xs text-gray-500">
-          Ensure Backend is running on port 5000
+          Please check your internet or database connection.
         </p>
       </div>
     );

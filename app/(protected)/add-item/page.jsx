@@ -1,21 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import {
-  Package,
-  DollarSign,
-  Tag,
-  FileText,
-  Image,
-  Save,
-  X,
-  ChevronDown,
-  AlertCircle,
-} from "lucide-react";
-import { Navbar, Footer } from "@/components/layout";
+import { Package, DollarSign, ChevronDown, Save, Loader2 } from "lucide-react";
+import { Footer } from "@/components/layout";
 import { toast } from "sonner";
 
 export default function AddItemPage() {
@@ -35,6 +25,13 @@ export default function AddItemPage() {
     image: "🛒",
   });
 
+  // ✅ FIX: Standard Next.js Redirect Pattern
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+    }
+  }, [status, router]);
+
   const categories = [
     "Vegetables",
     "Fruits",
@@ -46,7 +43,6 @@ export default function AddItemPage() {
     "Snacks",
     "Cleaning",
   ];
-
   const badges = ["", "Sale", "Fresh", "New", "Best Seller", "Premium"];
   const units = ["kg", "g", "liter", "ml", "pack", "piece", "dozen", "bundle"];
   const emojis = [
@@ -67,20 +63,6 @@ export default function AddItemPage() {
     "🧹",
     "🛒",
   ];
-
-  // Redirect if not authenticated
-  if (status === "loading") {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <span className="animate-spin text-4xl">⏳</span>
-      </div>
-    );
-  }
-
-  if (!session) {
-    router.push("/login");
-    return null;
-  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -118,35 +100,45 @@ export default function AddItemPage() {
     }
   };
 
+  // 1. Loading State
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+        <Loader2 className="w-12 h-12 text-teal-600 animate-spin mb-4" />
+        <p className="text-gray-500 font-medium">Checking authentication...</p>
+      </div>
+    );
+  }
+
+  // 2. Prevent content flash for unauthenticated users
+  if (!session) return null;
+
   return (
     <>
-      <Navbar />
-
-      <main className="min-h-screen bg-gray-50 py-8">
+      <main className="min-h-screen bg-gray-50 py-12">
         <div className="container-custom max-w-3xl">
           {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">
+          <div className="mb-10">
+            <h1 className="text-3xl font-black text-gray-900 tracking-tight">
               Add New Product
             </h1>
-            <p className="text-gray-500 mt-1">
-              Fill in the details to add a new product
+            <p className="text-gray-500 mt-2 font-medium">
+              Create a new item for your grocery catalog.
             </p>
           </div>
 
-          {/* Form */}
           <motion.form
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             onSubmit={handleSubmit}
-            className="bg-white rounded-2xl border border-gray-200 p-6 sm:p-8 space-y-6"
+            className="bg-white rounded-3xl border border-gray-100 p-8 shadow-sm space-y-8"
           >
-            {/* Product Image Selector */}
+            {/* Emoji Selector */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-bold text-gray-700 mb-4">
                 Product Icon
               </label>
-              <div className="flex flex-wrap gap-2">
+              <div className="grid grid-cols-8 gap-2">
                 {emojis.map((emoji) => (
                   <button
                     key={emoji}
@@ -154,11 +146,11 @@ export default function AddItemPage() {
                     onClick={() =>
                       setFormData((prev) => ({ ...prev, image: emoji }))
                     }
-                    className={`w-12 h-12 text-2xl rounded-xl border-2 flex items-center justify-center transition-all
+                    className={`aspect-square text-2xl rounded-2xl border-2 flex items-center justify-center transition-all
                       ${
                         formData.image === emoji
-                          ? "border-green-500 bg-green-50"
-                          : "border-gray-200 hover:border-gray-300"
+                          ? "border-teal-500 bg-teal-50 scale-105"
+                          : "border-gray-50 bg-gray-50 hover:border-gray-200"
                       }`}
                   >
                     {emoji}
@@ -167,28 +159,28 @@ export default function AddItemPage() {
               </div>
             </div>
 
-            {/* Name Fields */}
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Product Name (English) *
+            {/* Names */}
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-gray-700">
+                  Product Name (EN)
                 </label>
                 <div className="relative">
-                  <Package className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Package className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    placeholder="e.g., Fresh Tomatoes"
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-green-500 focus:bg-white transition-all"
+                    placeholder="Green Spinach"
+                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-teal-500 transition-all outline-none"
                   />
                 </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Product Name (Bengali) *
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-gray-700">
+                  Product Name (BN)
                 </label>
                 <input
                   type="text"
@@ -196,49 +188,42 @@ export default function AddItemPage() {
                   value={formData.nameBn}
                   onChange={handleChange}
                   required
-                  placeholder="e.g., টমেটো"
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-green-500 focus:bg-white transition-all font-bengali"
+                  placeholder="পালং শাক"
+                  className="w-full px-5 py-3.5 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-teal-500 transition-all outline-none"
                 />
               </div>
             </div>
 
-            {/* Price Fields */}
-            <div className="grid sm:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Price (৳) *
+            {/* Pricing/Stock */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-gray-700">
+                  Price (৳)
                 </label>
-                <div className="relative">
-                  <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    type="number"
-                    name="price"
-                    value={formData.price}
-                    onChange={handleChange}
-                    required
-                    min="0"
-                    placeholder="60"
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-green-500 focus:bg-white transition-all"
-                  />
-                </div>
+                <input
+                  type="number"
+                  name="price"
+                  value={formData.price}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-5 py-3.5 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-teal-500 outline-none"
+                />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Original Price (৳)
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-gray-700">
+                  Old Price (৳)
                 </label>
                 <input
                   type="number"
                   name="originalPrice"
                   value={formData.originalPrice}
                   onChange={handleChange}
-                  min="0"
-                  placeholder="80 (optional)"
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-green-500 focus:bg-white transition-all"
+                  className="w-full px-5 py-3.5 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-teal-500 outline-none"
                 />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Stock *
+              <div className="space-y-2 col-span-2 md:col-span-1">
+                <label className="text-sm font-bold text-gray-700">
+                  Stock Qty
                 </label>
                 <input
                   type="number"
@@ -246,84 +231,68 @@ export default function AddItemPage() {
                   value={formData.stock}
                   onChange={handleChange}
                   required
-                  min="0"
-                  placeholder="50"
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-green-500 focus:bg-white transition-all"
+                  className="w-full px-5 py-3.5 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-teal-500 outline-none"
                 />
               </div>
             </div>
 
-            {/* Category, Unit, Badge */}
-            <div className="grid sm:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Category *
+            {/* Dropdowns */}
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-gray-700">
+                  Category
                 </label>
-                <div className="relative">
-                  <select
-                    name="category"
-                    value={formData.category}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-green-500 focus:bg-white appearance-none cursor-pointer"
-                  >
-                    <option value="">Select category</option>
-                    {categories.map((cat) => (
-                      <option key={cat} value={cat}>
-                        {cat}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-                </div>
+                <select
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-5 py-3.5 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-teal-500 outline-none appearance-none cursor-pointer"
+                >
+                  <option value="">Select Category</option>
+                  {categories.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Unit *
-                </label>
-                <div className="relative">
-                  <select
-                    name="unit"
-                    value={formData.unit}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-green-500 focus:bg-white appearance-none cursor-pointer"
-                  >
-                    {units.map((unit) => (
-                      <option key={unit} value={unit}>
-                        {unit}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-                </div>
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-gray-700">Unit</label>
+                <select
+                  name="unit"
+                  value={formData.unit}
+                  onChange={handleChange}
+                  className="w-full px-5 py-3.5 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-teal-500 outline-none cursor-pointer"
+                >
+                  {units.map((u) => (
+                    <option key={u} value={u}>
+                      {u}
+                    </option>
+                  ))}
+                </select>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Badge
-                </label>
-                <div className="relative">
-                  <select
-                    name="badge"
-                    value={formData.badge}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-green-500 focus:bg-white appearance-none cursor-pointer"
-                  >
-                    {badges.map((badge) => (
-                      <option key={badge} value={badge}>
-                        {badge || "None"}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-                </div>
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-gray-700">Badge</label>
+                <select
+                  name="badge"
+                  value={formData.badge}
+                  onChange={handleChange}
+                  className="w-full px-5 py-3.5 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-teal-500 outline-none cursor-pointer"
+                >
+                  {badges.map((b) => (
+                    <option key={b} value={b}>
+                      {b || "No Badge"}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 
             {/* Description */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Description *
+            <div className="space-y-2">
+              <label className="text-sm font-bold text-gray-700">
+                Description
               </label>
               <textarea
                 name="description"
@@ -331,58 +300,35 @@ export default function AddItemPage() {
                 onChange={handleChange}
                 required
                 rows={4}
-                placeholder="Write a short description about the product..."
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-green-500 focus:bg-white transition-all resize-none"
+                className="w-full px-5 py-3.5 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-teal-500 transition-all outline-none resize-none"
               />
             </div>
 
-            {/* Preview */}
-            <div className="bg-gray-50 rounded-xl p-4">
-              <p className="text-sm font-medium text-gray-700 mb-3">Preview</p>
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center text-4xl border border-gray-200">
-                  {formData.image}
-                </div>
-                <div>
-                  <p className="font-semibold text-gray-800">
-                    {formData.name || "Product Name"}
-                  </p>
-                  <p className="text-sm text-gray-500 font-bengali">
-                    {formData.nameBn || "বাংলা নাম"}
-                  </p>
-                  <p className="text-green-600 font-bold">
-                    ৳{formData.price || "0"}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex items-center gap-4 pt-4 border-t border-gray-200">
+            {/* Buttons */}
+            <div className="flex gap-4 pt-6 border-t border-gray-100">
               <button
                 type="button"
                 onClick={() => router.back()}
-                className="px-6 py-3 border border-gray-300 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                className="px-8 py-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-2xl font-bold transition-all"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 flex items-center justify-center gap-2 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold transition-colors disabled:opacity-50"
+                className="flex-1 flex items-center justify-center gap-2 py-4 bg-teal-600 hover:bg-teal-700 text-white rounded-2xl font-bold transition-all disabled:opacity-50"
               >
                 {isSubmitting ? (
-                  <span className="animate-spin">⏳</span>
+                  <Loader2 className="animate-spin" />
                 ) : (
                   <Save className="w-5 h-5" />
                 )}
-                {isSubmitting ? "Adding..." : "Add Product"}
+                {isSubmitting ? "Processing..." : "Add to Catalog"}
               </button>
             </div>
           </motion.form>
         </div>
       </main>
-
       <Footer />
     </>
   );

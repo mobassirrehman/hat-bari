@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import {
@@ -12,12 +12,12 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { Navbar, Footer } from "@/components/layout";
-import { useCartStore } from "@/store/cartStore";
+import { useCartStore } from "@/store/useCartStore";
 import { toast } from "sonner";
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const router = useRouter();
-  const { items, getTotalPrice, clearCart } = useCartStore();
+  const { items, getCartTotal, clearCart } = useCartStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("cod");
   const [formData, setFormData] = useState({
@@ -28,8 +28,8 @@ export default function CheckoutPage() {
     note: "",
   });
 
-  const deliveryFee = getTotalPrice() >= 500 ? 0 : 50;
-  const total = getTotalPrice() + deliveryFee;
+  const deliveryFee = getCartTotal() >= 500 ? 0 : 50;
+  const total = getCartTotal() + deliveryFee;
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -284,9 +284,12 @@ export default function CheckoutPage() {
 
                 <div className="space-y-3 max-h-64 overflow-y-auto mb-4">
                   {items.map((item) => (
-                    <div key={item.id} className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center">
-                        <span className="text-2xl">{item.image}</span>
+                    <div
+                      key={item.id || item._id}
+                      className="flex items-center gap-3"
+                    >
+                      <div className="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center text-2xl overflow-hidden">
+                        {item.image}
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-gray-800 truncate">
@@ -306,7 +309,7 @@ export default function CheckoutPage() {
                 <div className="border-t border-gray-200 pt-4 space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-500">Subtotal</span>
-                    <span className="text-gray-900">৳{getTotalPrice()}</span>
+                    <span className="text-gray-900">৳{getCartTotal()}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-500">Delivery</span>
@@ -344,5 +347,22 @@ export default function CheckoutPage() {
       </main>
       <Footer />
     </>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <div className="text-center">
+            <div className="animate-spin w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p className="text-gray-500">Loading checkout...</p>
+          </div>
+        </div>
+      }
+    >
+      <CheckoutContent />
+    </Suspense>
   );
 }

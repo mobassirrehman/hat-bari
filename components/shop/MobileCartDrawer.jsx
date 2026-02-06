@@ -1,18 +1,10 @@
 "use client";
 
 import { X, Plus, Minus, Trash2 } from "lucide-react";
-import useCartStore from "@/store/useCartStore";
-import Image from "next/image";
-import Link from "next/link";
+import { useCartStore } from "@/store/useCartStore";
 export default function MobileCartDrawer() {
-  const {
-    items,
-    isOpen,
-    toggleCart,
-    removeItem,
-    updateQuantity,
-    getCartTotal,
-  } = useCartStore();
+  const { items, isOpen, toggleCart, removeItem, updateQuantity } =
+    useCartStore();
 
   return (
     <>
@@ -116,7 +108,11 @@ export default function MobileCartDrawer() {
               <div className="flex justify-between items-center mb-4">
                 <span className="text-gray-600 font-medium">Total Amount</span>
                 <span className="text-2xl font-black text-teal-700">
-                  ৳{getCartTotal()}
+                  ৳
+                  {items.reduce(
+                    (total, item) => total + item.price * item.quantity,
+                    0
+                  )}
                 </span>
               </div>
               <button className="w-full bg-teal-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-teal-700 transition-colors shadow-lg shadow-teal-600/20">

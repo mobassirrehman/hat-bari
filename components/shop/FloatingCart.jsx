@@ -1,22 +1,15 @@
 "use client";
 
 import { ShoppingBag } from "lucide-react";
-import useCartStore from "@/store/useCartStore";
-import { useEffect, useState } from "react";
+import { useCartStore } from "@/store/useCartStore";
 import { motion, AnimatePresence } from "framer-motion";
+import dynamic from "next/dynamic";
 
-export default function FloatingCart() {
-  const { getCartCount, toggleCart } = useCartStore();
-  const [mounted, setMounted] = useState(false);
+function FloatingCart() {
+  const items = useCartStore((state) => state.items);
+  const toggleCart = useCartStore((state) => state.toggleCart);
 
-  // Prevent hydration errors
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return null;
-
-  const count = getCartCount();
+  const count = items.reduce((total, item) => total + item.quantity, 0);
 
   if (count === 0) return null;
 
@@ -42,3 +35,5 @@ export default function FloatingCart() {
     </AnimatePresence>
   );
 }
+
+export default dynamic(() => Promise.resolve(FloatingCart), { ssr: false });

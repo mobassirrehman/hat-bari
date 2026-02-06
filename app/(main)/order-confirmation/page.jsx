@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react"; // Added Suspense
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -16,7 +16,9 @@ import {
 import { Navbar, Footer } from "@/components/layout";
 import { toast } from "sonner";
 
-export default function OrderConfirmationPage() {
+// 1. Rename your original component to 'OrderConfirmationContent'
+// This holds all the logic that relies on search params
+function OrderConfirmationContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId") || "HB00000000";
   const [copied, setCopied] = useState(false);
@@ -167,5 +169,23 @@ export default function OrderConfirmationPage() {
       </main>
       <Footer />
     </>
+  );
+}
+
+// 2. Export a wrapper component that uses Suspense
+export default function OrderConfirmationPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <div className="text-center">
+            <div className="animate-spin w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p className="text-gray-500">Loading order details...</p>
+          </div>
+        </div>
+      }
+    >
+      <OrderConfirmationContent />
+    </Suspense>
   );
 }

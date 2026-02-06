@@ -74,9 +74,7 @@ export const useCartStore = create(
     }),
     {
       name: "hatbari-cart", // Saves to localStorage
-      partialize: (state) => ({ items: state.items }), // Don't save isOpen state
+      partialize: (state) => ({ items: state.items }),
     }
   )
 );
-
-export default useCartStore;

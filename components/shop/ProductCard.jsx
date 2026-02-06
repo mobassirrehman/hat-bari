@@ -1,17 +1,18 @@
 "use client";
 
-import useCartStore from "@/store/useCartStore";
+import { useCartStore } from "@/store/useCartStore";
 import { Plus } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function ProductCard({ item }) {
   const { addItem, toggleCart } = useCartStore();
+  if (!item) return null;
 
   const handleAddToCart = (e) => {
-    e.preventDefault(); // Stop link navigation if card is wrapped in Link
+    e.preventDefault();
     e.stopPropagation();
     addItem(item);
-    toggleCart(); // Optional: Open drawer immediately when adding
+    toggleCart();
   };
 
   return (

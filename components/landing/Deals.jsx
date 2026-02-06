@@ -85,7 +85,7 @@ export default function Deals() {
               Deals of the <span className="text-orange-500">Day</span>
             </h2>
             <p className="text-gray-500">
-              Don't miss out on these limited time discounts.
+              {`Don't miss out on these limited time discounts.`}
             </p>
           </div>
 
