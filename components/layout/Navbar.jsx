@@ -39,9 +39,26 @@ export default function Navbar() {
   const searchRef = useRef(null);
 
   // Menus
-  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Mobile Menu State
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Fetch categories from API
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    fetch("/api/categories")
+      .then((res) => res.json())
+      .then((data) => {
+        const cats = Array.isArray(data) ? data : data.categories || [];
+        // Extract category names, filter out empty
+        const names = cats
+          .map((c) => (typeof c === "string" ? c : c.name || c.category))
+          .filter(Boolean);
+        setCategories(names.length > 0 ? names : ["Vegetables", "Fruits", "Dairy", "Meat", "Bakery"]);
+      })
+      .catch(() => {
+        setCategories(["Vegetables", "Fruits", "Dairy", "Meat", "Bakery"]);
+      });
+  }, []);
 
   // Instant Search Effect
   useEffect(() => {
@@ -50,11 +67,10 @@ export default function Navbar() {
         setIsSearching(true);
         setShowDropdown(true);
         try {
-          const res = await fetch(`/api/items?search=${searchQuery}&limit=5`);
+          const res = await fetch(`/api/items?search=${encodeURIComponent(searchQuery)}&limit=5`);
           const data = await res.json();
           setSearchResults(data.items || []);
-        } catch (error) {
-          console.error(error);
+        } catch {
           setSearchResults([]);
         } finally {
           setIsSearching(false);
@@ -68,7 +84,7 @@ export default function Navbar() {
     return () => clearTimeout(delayDebounceFn);
   }, [searchQuery]);
 
-  // Close search dropdown when clicking outside
+  // Close dropdowns on outside click
   useEffect(() => {
     function handleClickOutside(event) {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -84,10 +100,10 @@ export default function Navbar() {
     setShowDropdown(false);
     if (searchQuery.trim()) {
       router.push(`/shop?search=${encodeURIComponent(searchQuery)}`);
+      setSearchQuery("");
     }
   };
 
-  const categories = ["Vegetables", "Fruits", "Dairy", "Meat", "Bakery"];
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "Shop", href: "/shop" },
@@ -173,19 +189,26 @@ export default function Navbar() {
               {/* Instant Search Results */}
               {showDropdown && (
                 <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50">
-                  {searchResults.length > 0 ? (
+                  {isSearching ? (
+                    <div className="p-4 text-center">
+                      <Loader2 className="w-5 h-5 text-teal-600 animate-spin mx-auto" />
+                    </div>
+                  ) : searchResults.length > 0 ? (
                     <ul>
                       {searchResults.map((product) => (
                         <li key={product._id}>
                           <Link
                             href={`/shop/${product._id}`}
-                            onClick={() => setShowDropdown(false)}
+                            onClick={() => {
+                              setShowDropdown(false);
+                              setSearchQuery("");
+                            }}
                             className="flex items-center gap-4 p-3 hover:bg-gray-50 transition-colors border-b border-gray-50 last:border-0"
                           >
                             <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-xl shrink-0">
                               {product.image}
                             </div>
-                            <div>
+                            <div className="flex-1 min-w-0">
                               <p className="font-bold text-gray-800 text-sm line-clamp-1">
                                 {product.name}
                               </p>
@@ -196,13 +219,26 @@ export default function Navbar() {
                           </Link>
                         </li>
                       ))}
+                      {/* View all results link */}
+                      <li>
+                        <button
+                          onClick={() => {
+                            setShowDropdown(false);
+                            router.push(
+                              `/shop?search=${encodeURIComponent(searchQuery)}`
+                            );
+                            setSearchQuery("");
+                          }}
+                          className="w-full p-3 text-center text-sm font-bold text-teal-600 hover:bg-teal-50 transition-colors"
+                        >
+                          View all results →
+                        </button>
+                      </li>
                     </ul>
                   ) : (
-                    !isSearching && (
-                      <div className="p-4 text-center text-gray-500 text-sm">
-                        No products found
-                      </div>
-                    )
+                    <div className="p-4 text-center text-gray-500 text-sm">
+                      No products found for &ldquo;{searchQuery}&rdquo;
+                    </div>
                   )}
                 </div>
               )}
@@ -242,6 +278,7 @@ export default function Navbar() {
                       </div>
                       <Link
                         href="/profile"
+                        onClick={() => setIsUserMenuOpen(false)}
                         className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-teal-600"
                       >
                         <User className="w-4 h-4" /> My Profile
@@ -283,7 +320,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* ✅ MOBILE MENU (Visible when hamburger clicked) */}
+      {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="lg:hidden bg-white border-b border-gray-100 animate-in slide-in-from-top-2">
           <div className="container mx-auto px-4 py-4 space-y-4">
@@ -318,7 +355,7 @@ export default function Navbar() {
               ))}
             </div>
 
-            {/* Mobile Categories (Accordion style) */}
+            {/* Mobile Categories */}
             <div className="pt-2 border-t border-gray-100">
               <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 px-2">
                 Categories
@@ -326,7 +363,7 @@ export default function Navbar() {
               {categories.map((cat) => (
                 <Link
                   key={cat}
-                  href={`/shop?category=${cat}`}
+                  href={`/shop?category=${encodeURIComponent(cat)}`}
                   className="flex items-center justify-between p-2 text-sm text-gray-600 hover:text-teal-600 hover:bg-gray-50 rounded-lg"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
@@ -346,10 +383,7 @@ export default function Navbar() {
             <div className="flex items-center gap-1 text-sm font-bold text-gray-600">
               {/* Browse Categories Dropdown */}
               <div className="relative group py-3 pr-6">
-                <button
-                  onClick={() => setIsCategoryOpen(!isCategoryOpen)}
-                  className="flex items-center gap-3 bg-teal-700 text-white px-5 py-2.5 rounded-full hover:bg-teal-800 transition-all shadow-md shadow-teal-700/20"
-                >
+                <button className="flex items-center gap-3 bg-teal-700 text-white px-5 py-2.5 rounded-full hover:bg-teal-800 transition-all shadow-md shadow-teal-700/20">
                   <Menu className="w-4 h-4" />
                   <span>Browse Categories</span>
                   <ChevronDown className="w-3 h-3 opacity-70" />
@@ -359,7 +393,7 @@ export default function Navbar() {
                   {categories.map((cat) => (
                     <Link
                       key={cat}
-                      href={`/shop?category=${cat}`}
+                      href={`/shop?category=${encodeURIComponent(cat)}`}
                       className="block px-5 py-2.5 text-gray-600 hover:bg-teal-50 hover:text-teal-700 hover:pl-7 transition-all"
                     >
                       {cat}
@@ -368,7 +402,7 @@ export default function Navbar() {
                 </div>
               </div>
 
-              {/* ✅ CLEAN GENERIC LINKS */}
+              {/* Nav Links */}
               <nav className="flex items-center gap-6 ml-4">
                 {navLinks.map((link) => (
                   <Link
@@ -381,7 +415,6 @@ export default function Navbar() {
                 ))}
               </nav>
             </div>
-            {/* Removed Best Seller as requested */}
           </div>
         </div>
       </div>

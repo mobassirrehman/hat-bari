@@ -1,4 +1,3 @@
-// app/(main)/contact/page.jsx
 "use client";
 
 import { useState } from "react";
